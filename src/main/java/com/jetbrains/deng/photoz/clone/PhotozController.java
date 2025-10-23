@@ -1,6 +1,6 @@
 package com.jetbrains.deng.photoz.clone;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
@@ -31,6 +32,13 @@ public class PhotozController {
     public Photo get(@PathVariable String id) {
         Photo photo = db.get(id);
         if (photo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return photo;
+    }
+
+    @PostMapping("/photoz")
+    public Photo create(@RequestBody @Valid Photo photo) {
+        photo.setId(UUID.randomUUID().toString());
+        db.put(photo.getId(), photo);
         return photo;
     }
 
